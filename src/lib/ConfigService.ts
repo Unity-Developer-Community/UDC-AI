@@ -16,6 +16,7 @@ export interface ChannelConfig {
     event: 'threadCreate' | 'messageCreate' | 'threadUpdate';
     requireMention?: boolean;
     model: string;
+    modelType: 'openai' | 'ollama';
     systemPrompt: string;
     responseSettings: ResponseSettings;
 }
