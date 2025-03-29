@@ -18,16 +18,95 @@ interface InputMessage {
 const MAX_MESSAGE_LENGTH = 1950;
 /**
  * Split the original message into several messages that are under the MAX length
- * @param message The message to split */
+ * @param message The message to split 
+ * Avoids cutting words, Discord code blocks, and formatting tags
+ */
 function splitMessage(message: string): string[] {
     const messages: string[] = [];
 
     let rest = message;
-    do {
-        messages.push(rest.slice(0, MAX_MESSAGE_LENGTH));
-        rest = rest.slice(messages[messages.length - 1].length);
-    } while (rest.length > 0)
+    while (rest.length > 0) {
+        if (rest.length <= MAX_MESSAGE_LENGTH) {
+            messages.push(rest);
+            break;
+        }
+
+        // Find a good cutting point before MAX_MESSAGE_LENGTH
+        let cutIndex = MAX_MESSAGE_LENGTH;
+        
+        // Look for a newline first to preserve complete lines
+        const lastNewlineIndex = rest.lastIndexOf('\n', cutIndex);
+        if (lastNewlineIndex > 0) {
+            cutIndex = lastNewlineIndex + 1; // Include the newline character
+        } else {
+            // If no newline, look for a space to avoid cutting words
+            while (cutIndex > 0 && rest.charAt(cutIndex) !== ' ' && rest.charAt(cutIndex) !== '\n') {
+                cutIndex--;
+            }
+        }
+
+        // If we couldn't find a good space, fall back to MAX_MESSAGE_LENGTH
+        if (cutIndex === 0) {
+            cutIndex = MAX_MESSAGE_LENGTH;
+        }
+
+        // Check for Discord code blocks (```) and avoid cutting them
+        const codeBlockIndices = [];
+        let searchPos = 0;
+        while (searchPos < cutIndex) {
+            const codeBlockStart = rest.indexOf('```', searchPos);
+            if (codeBlockStart !== -1 && codeBlockStart < cutIndex) {
+                const codeBlockEnd = rest.indexOf('```', codeBlockStart + 3);
+                codeBlockIndices.push({ start: codeBlockStart, end: codeBlockEnd === -1 ? rest.length : codeBlockEnd + 3 });
+                searchPos = codeBlockEnd === -1 ? rest.length : codeBlockEnd + 3;
+            } else {
+                break;
+            }
+        }
+
+        // Check for discord formatting tags (* _ ~~ __ ** etc)
+        const formattingChars = ['*', '**', '_', '~~', '||'];
+        
+        // If our cutIndex falls inside a code block, adjust it
+        for (const { start, end } of codeBlockIndices) {
+            if (cutIndex > start && cutIndex < end) {
+                cutIndex = start;
+                break;
+            }
+        }
+
+        // Check for unclosed formatting tags
+        for (const char of formattingChars) {
+            const count = countOccurrences(rest.substring(0, cutIndex), char);
+            // If we have an odd number of formatting characters, find the last one and cut before it
+            if (count % 2 !== 0) {
+                const lastIndex = rest.lastIndexOf(char, cutIndex);
+                if (lastIndex !== -1) {
+                    cutIndex = Math.min(cutIndex, lastIndex);
+                }
+            }
+        }
+
+        messages.push(rest.substring(0, cutIndex));
+        rest = rest.substring(cutIndex).trim();
+    }
+    
     return messages;
+}
+
+/**
+ * Count occurrences of a substring in a string
+ */
+function countOccurrences(str: string, subStr: string): number {
+    let count = 0;
+    let position = 0;
+    while (true) {
+        position = str.indexOf(subStr, position);
+        if (position === -1) break;
+        count++;
+        position += subStr.length;
+    }
+    return count;
 }
 
 
