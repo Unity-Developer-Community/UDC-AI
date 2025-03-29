@@ -1,30 +1,30 @@
 {
-	"name": "UDC-AI",
+	"name": "udc-ai",
 	"version": "1.0.0",
 	"main": "dist/index.js",
 	"author": "UDC",
 	"license": "MIT",
 	"type": "commonjs",
 	"dependencies": {
-		"@sapphire/decorators": "^6.0.2",
+		"@sapphire/decorators": "^6.1.1",
 		"@sapphire/discord.js-utilities": "7.0.2",
-		"@sapphire/framework": "^4.6.0",
-		"@sapphire/plugin-logger": "^3.0.6",
-		"@sapphire/utilities": "^3.13.0",
-		"@skyra/env-utilities": "^1.2.1",
+		"@sapphire/framework": "^4.8.5",
+		"@sapphire/plugin-logger": "^3.0.7",
+		"@sapphire/utilities": "^3.18.2",
+		"@skyra/env-utilities": "^1.3.0",
 		"colorette": "^2.0.20",
-		"discord.js": "^14.13.0",
-		"openai": "^4.0.0"
+		"discord.js": "^14.18.0",
+		"openai": "^4.90.0"
 	},
 	"devDependencies": {
-		"@sapphire/cli": "^1.6.1",
+		"@sapphire/cli": "^1.9.3",
 		"@sapphire/prettier-config": "^2.0.0",
-		"@sapphire/ts-config": "^5.0.0",
-		"@types/node": "^20.6.0",
-		"@types/ws": "^8.5.5",
-		"prettier": "^3.0.3",
-		"tsc-watch": "^6.0.4",
-		"typescript": "^5.2.2"
+		"@sapphire/ts-config": "^5.0.1",
+		"@types/node": "^20.17.28",
+		"@types/ws": "^8.18.0",
+		"prettier": "^3.5.3",
+		"tsc-watch": "^6.2.1",
+		"typescript": "^5.8.2"
 	},
 	"scripts": {
 		"sapphire": "sapphire",
