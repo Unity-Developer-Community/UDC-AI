@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Discord Bot Configuration",
+  "description": "Configuration for Discord bot's channel-specific GPT behaviors",
+  "type": "object",
+  "required": ["channels"],
+  "properties": {
+    "channels": {
+      "type": "array",
+      "description": "List of channel configurations",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type", "event", "model", "systemPrompt", "responseSettings"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Discord channel ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable channel name"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this channel configuration is active",
+            "default": true
+          },
+          "type": {
+            "type": "string",
+            "enum": ["forum", "text", "other"],
+            "description": "The type of Discord channel"
+          },
+          "event": {
+            "type": "string",
+            "enum": ["threadCreate", "messageCreate", "threadUpdate"],
+            "description": "The Discord event to listen for"
+          },
+          "requireMention": {
+            "type": "boolean",
+            "description": "Whether the bot needs to be mentioned to respond (for messageCreate events)",
+            "default": false
+          },
+          "model": {
+            "type": "string",
+            "description": "The OpenAI model to use for completion",
+            "examples": ["gpt-3.5-turbo", "gpt-4o", "gpt-4o-mini"]
+          },
+          "systemPrompt": {
+            "type": "string",
+            "description": "System prompt to provide context to the model"
+          },
+          "responseSettings": {
+            "type": "object",
+            "description": "Settings for how the bot should respond",
+            "required": ["responseType"],
+            "properties": {
+              "okResponse": {
+                "type": "string",
+                "description": "A response string that indicates no action is required",
+                "default": "<OK>"
+              },
+              "responseType": {
+                "type": "string",
+                "enum": ["reply", "send", "none"],
+                "description": "How to deliver the response: reply to message, send new message, or no response"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
