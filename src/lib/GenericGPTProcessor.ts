@@ -153,7 +153,6 @@ export async function prepareMessage(
     try {
         container.logger.debug(`Preparing message with ${config.modelType} for config "${config.name}"`);
 
-        console.log(config.systemPrompt);
         const messages: InputMessage[] = [
             { role: "system" as const, content: config.systemPrompt },
             { role: "user" as const, content: content }
