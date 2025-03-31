@@ -240,14 +240,14 @@ Post: ${message.content}`;
 }
 
 // Process a message in a text channel
-export async function processTextMessage(message: Message): Promise<string | undefined> {
+export async function processTextMessage(message: Message, byPassMention?: boolean): Promise<string | undefined> {
     try {
         // Get channel configuration
         const config = ConfigService.getInstance().getChannelConfig(message.channel.id);
         if (!config) return undefined;
 
         // Check if we need to be mentioned and if we are
-        if (config.requireMention && !message.mentions.has(message.client.user?.id || '')) {
+        if (!byPassMention && config.requireMention && !message.mentions.has(message.client.user?.id || '')) {
             return undefined;
         }
 
